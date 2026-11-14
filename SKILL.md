@@ -1,13 +1,38 @@
 ---
 name: scientific-illustrator-agent
-description: Create editable scientific diagrams in desktop Adobe Illustrator through Python and Windows COM. Supports sequential element construction and optional multi-cursor swarm presentations when requested.
+description: Create and update editable scientific matrices, graphs and data-flow diagrams in desktop Adobe Illustrator through Python and Windows COM, including current-document drawing, sequential construction and optional multi-cursor presentations.
 ---
 
 # Scientific Illustrator Agent
 
 This skill bundles the Python engine beside this file. Resolve all relative paths below against this skill directory, not the user's working directory. Windows and locally installed Illustrator are required. Illustrator 2022 was tested; 2020 compatibility is intended but not verified. This is a CLI skill, not an MCP server.
 
+## Default visual refinement loop
+
+For drawing and visual improvement tasks, use **3 total render/review rounds by
+default, including the initial build**. Read `docs/visual_refinement.md` before
+starting. The host agent must inspect actual exported PNGs, identify concrete
+visible defects, revise only the affected source/components, and verify the
+result. Round 1 establishes structure, round 2 corrects layout and reference
+fidelity, and round 3 polishes and checks regressions. Respect user-requested
+loop counts or one-pass work. Log actual rounds and retain the best editable
+version. If no change is justified, perform a documented no-change review;
+never invent edits or repeatedly execute an unchanged mutation. This workflow
+is agent-driven, not a renderer `--loop` flag. COM failures stop mutation for
+state inspection rather than triggering automatic retries. See the linked
+reference for evidence, checkpoints, presentation modes and stopping rules.
+
 ## Prepare
+
+For environment diagnostics, reusable matrix/graph components, or drawing into
+the current file, read `docs/components.md` and use `examples/components.py`.
+If `runtime.local.json` exists, use its recorded Python after checking the path.
+`doctor --connect --remember` verifies dependencies and COM/JSX before recording
+an interpreter. The component entry point supports new and active documents,
+scene IDs for repeatable updates, semantic counts, and cropped PNG previews.
+For current-document requests, inspect the document first and pass its exact
+name with `--expected-document`. The standard Draw workflow below still creates
+new documents; do not use it for a request to edit the current file.
 
 Use an available Windows Python 3.9+ with pywin32, Pydantic and Pillow. If dependencies are missing, create a local virtual environment and install `requirements.txt`; do not replace the user's global Python packages. See `README.md` for installation and COM troubleshooting.
 
@@ -24,7 +49,7 @@ Run `python "<skill-directory>/examples/hello_illustrator.py" --connect-only` to
 
 ## Scope and limitations
 
-The CLI supports basic nodes, text and arrows, AI saving and PNG export. It does not call a language or vision model itself: the agent interprets the request and creates the spec. Do not claim pixel-exact reconstruction or original numerical data from a screenshot. Complex branched routing, full visual QC, PDF/SVG export and MCP are not implemented in this CLI.
+The CLI supports basic nodes, text and arrows, AI saving and PNG export. It does not call a language or vision model itself: the agent interprets the request and creates the spec. Do not claim pixel-exact reconstruction or original numerical data from a screenshot. Complex branched routing, automated visual scoring, PDF/SVG export and MCP are not implemented in this CLI. Visual review and refinement are performed by the host agent using exported previews.
 
 ## Sequential element construction（逐元素叠加）
 

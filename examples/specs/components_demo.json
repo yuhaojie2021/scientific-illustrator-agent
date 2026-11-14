@@ -1,0 +1,13 @@
+{
+  "scene_id": "component_demo",
+  "width": 520,
+  "height": 240,
+  "components": [
+    {"id":"expression","type":"matrix","x":50,"y":90,"title":"profiles","column_label":"Spots","row_label":"Genes","cell_size":22,
+     "cells":[["#A85808","#B76E18","#A65908","#AF6510"],["#B56A12","#A25507","#B77119","#A85C09"],["#A75B09","#B16A13","#A85E0B","#B26A12"]]},
+    {"id":"rna_graph","type":"graph","x":345,"y":90,"title":"mRNA graph",
+     "nodes":[{"id":"a","x":-25,"y":0,"features":["#AD620C","#B5751B"]},{"id":"b","x":40,"y":10,"features":["#B5751B","#A45708"]},{"id":"c","x":5,"y":70,"features":["#AD620C","#B5751B"]}],
+     "edges":[{"source":"a","target":"b"},{"source":"b","target":"c"}]}
+  ],
+  "links":[{"id":"expression_to_graph","source":"expression","target":"rna_graph","label":"mRNA Graph"}]
+}
